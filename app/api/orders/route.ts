@@ -1,4 +1,6 @@
+import { start } from "workflow/api";
 import { NextResponse } from "next/server";
+import { processOrder } from "@/workflows/process-order";
 import { recordOrder } from "@/lib/orders-store";
 import type { Order, PizzaName, Size, Crust } from "@/lib/pizza";
 
@@ -27,10 +29,8 @@ export async function POST(request: Request) {
     placedAt: new Date().toISOString(),
   };
 
-  // TODO (Lesson 1.3): Replace this stub with start(processOrder, [order]).
-  // For now we generate a fake runId so the redirect to /orders/[runId] works.
-  const fakeRunId = crypto.randomUUID();
-  recordOrder(order, fakeRunId);
+  const run = await start(processOrder, [order]);
+  recordOrder(order, run.runId);
 
-  return NextResponse.json({ runId: fakeRunId });
+  return NextResponse.json({ runId: run.runId });
 }

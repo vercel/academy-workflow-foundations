@@ -1,6 +1,6 @@
-# Pizza Tracker — Starter
+# Pizza Tracker — Complete
 
-Starter for the **Workflow Foundations** course.
+The reference implementation for the **Workflow Foundations** course.
 
 ```bash
 pnpm install
@@ -8,20 +8,28 @@ cp .env.local.example .env.local   # add your RESEND_API_KEY
 pnpm dev
 ```
 
-Then open http://localhost:3000.
+In another terminal:
 
-## What's already here
+```bash
+pnpm workflow:web   # local dashboard at http://localhost:3700
+```
 
-- The customer order form (`app/page.tsx`)
-- Kitchen and driver ops pages (buttons will 404 until you wire up the API routes in Section 3)
-- The order status page (`app/orders/[runId]/page.tsx`)
-- A stub `/api/orders` route that stores the order locally and returns a fake run ID
+Then open http://localhost:3000 and place a pizza order.
 
-## What you'll build
+## Pages
 
-- Wrap `next.config.ts` with `withWorkflow` (Lesson 1.1)
-- Steps in `workflows/steps/` starting with `sendOrderConfirmation` (Lesson 1.2)
-- The `processOrder` workflow (Lesson 1.3)
-- API routes to resume hooks (`/api/kitchen/ready`, `/api/driver/pickup`, `/api/driver/delivered`)
+- `/` — Customer order form
+- `/orders/[runId]` — Order status page (polls workflow state)
+- `/kitchen` — Kitchen ops (mark orders as ready)
+- `/driver` — Driver ops (pickup + delivered)
 
-Each lesson tells you exactly what to add.
+## Workflow Steps
+
+1. `chargeCard` — Fake payment, throws `FatalError` if the last 4 ends in `0000`
+2. `sendOrderConfirmation` — Resend email
+3. `acknowledgeKitchen` — Flaky (throws ~30% to demo retries)
+4. Wait on `kitchen:{orderId}` hook (with 20-minute timeout)
+5. `dispatchDelivery` — Driver assignment
+6. Wait on `driver-pickup:{orderId}` hook
+7. Wait on `driver-delivered:{orderId}` hook
+8. `sendReviewRequest` — Resend email
