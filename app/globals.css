@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+  --pizza-red: #c43421;
+  --pizza-cream: #fdf6e3;
+  --pizza-charcoal: #2a2520;
+}
+
+body {
+  background: var(--pizza-cream);
+  color: var(--pizza-charcoal);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
